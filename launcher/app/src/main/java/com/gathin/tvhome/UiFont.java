@@ -13,6 +13,7 @@ final class UiFont {
     private UiFont() {}
 
     static Typeface get(Context context, int fontString) {
+        if (ThemeFont.current != null) return ThemeFont.current;
         Resources res = context.getResources();
         TypedValue value = new TypedValue();
         res.getValue(fontString, value, true);

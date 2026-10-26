@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 16:9 banner: a screen with scan lines. Own art. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="320dp" android:height="180dp"
+    android:viewportWidth="320" android:viewportHeight="180">
+    <path android:fillColor="#101418" android:pathData="M0,0h320v180h-320z" />
+    <path android:fillColor="#FF8A1E" android:pathData="M60,30h200v120h-200z" />
+    <path android:fillColor="#000000" android:pathData="M60,42h200v6h-200zM60,60h200v6h-200zM60,78h200v6h-200zM60,96h200v6h-200zM60,114h200v6h-200zM60,132h200v6h-200z" />
+</vector>

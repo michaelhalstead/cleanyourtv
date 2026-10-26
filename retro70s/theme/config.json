@@ -38,5 +38,11 @@
   "dock_title": false,
   "glow_style": "horizon",
   "wallpaper_true_color": true,
-  "icon_only_inputs": true
+  "icon_only_inputs": true,
+  "font": "Righteous-Regular.ttf",
+  "clock_style": "led",
+  "clock_font": "DSEG7Classic-Bold.ttf",
+  "top_bar_apps": [
+    "io.github.michaelhalstead.crt"
+  ]
 }

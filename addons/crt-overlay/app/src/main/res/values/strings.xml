@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CRT</string>
+    <string name="channel_name">CRT overlay</string>
+    <string name="notification_text">Drawing the CRT effect. Open CRT to change or switch off.</string>
+    <string name="enabled">CRT effect</string>
+    <string name="strength">Strength %1$d%%</string>
+    <string name="need_overlay">Display over other apps is not allowed. Run install.sh, or allow it in the TV\'s app settings.</string>
+</resources>

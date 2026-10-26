@@ -95,7 +95,7 @@ if action == "write":
 elif action == "delete":
     if os.path.isdir(path):
         for name in os.listdir(path):
-            if name.lower().endswith((".jpg", ".jpeg", ".png", ".webp")):
+            if name.lower().endswith((".jpg", ".jpeg", ".png", ".webp", ".ttf", ".otf")):
                 os.remove(os.path.join(path, name))
     elif os.path.exists(path):
         os.remove(path)
@@ -298,6 +298,26 @@ class ThemePushTest(unittest.TestCase):
                          "pictures in it still offers the theme it just removed")
         self.assertFalse((self.device / "config.json").exists())
         self.assertFalse((self.device / "wallpaper.jpg").exists())
+
+    def test_fonts_are_pushed_replaced_and_reset(self):
+        fonts = self.theme / "fonts"
+        fonts.mkdir()
+        (fonts / "Righteous-Regular.ttf").write_bytes(b"\x00\x01font")
+        (fonts / "Seg.OTF").write_bytes(b"\x00\x02font")
+        (fonts / "OFL.txt").write_text("licence", encoding="utf-8")
+        stale = self.device / "fonts"
+        stale.mkdir()
+        (stale / "old.ttf").write_bytes(b"old")
+        result = self.run_theme(str(self.theme))
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual(sorted(p.name for p in stale.iterdir()), ["Righteous-Regular.ttf", "Seg.OTF"],
+                         "stale fonts go, fonts are pushed, the licence text is not")
+        self.assertEqual((stale / "Righteous-Regular.ttf").read_bytes(), b"\x00\x01font")
+        put = self.command_for("fonts/Righteous-Regular.ttf")
+        self.assertLess(put.index("content write"), put.index("cp "), put)
+        reset = self.run_theme("--reset")
+        self.assertEqual(reset.returncode, 0, reset.stdout + reset.stderr)
+        self.assertEqual(list(stale.iterdir()), [], "--reset removes the theme's fonts")
 
     def test_a_push_and_a_reset_clear_the_collection_with_one_command(self):
         """One clear, used by both paths: two copies are how --reset came to miss the collection."""

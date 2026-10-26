@@ -101,6 +101,7 @@ final class ClockScene {
         } catch (RuntimeException e) {
             return;
         }
+        ClockStyle.apply(content.findViewById(R.id.dreamClock), content.findViewById(R.id.dreamAmPm), cfg);
         if (!cfg.clockWallpaper) {
             // clock_glow false: plain black behind the clock (OLED); the clock itself still moves every minute.
             if (!cfg.clockGlow) {

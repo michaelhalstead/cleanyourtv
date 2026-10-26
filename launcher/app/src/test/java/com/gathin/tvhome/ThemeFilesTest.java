@@ -29,6 +29,30 @@ public class ThemeFilesTest {
         assertFalse(ThemeFiles.collectionImage("captions.txt"));
     }
 
+    @Test public void fontsAreAllowedByName() {
+        assertEquals("fonts/Righteous-Regular.ttf", ThemeFiles.path(Arrays.asList("fonts", "Righteous-Regular.ttf")));
+        assertEquals("fonts/DSEG7.OTF", ThemeFiles.path(Arrays.asList("fonts", "DSEG7.OTF")));
+        assertNull(ThemeFiles.path(Arrays.asList("fonts", "..")));
+        assertNull(ThemeFiles.path(Arrays.asList("fonts", "..ttf")));
+        assertNull(ThemeFiles.path(Arrays.asList("fonts", ".hidden.ttf")));
+        assertNull(ThemeFiles.path(Arrays.asList("fonts", "a b.ttf")));
+        assertNull(ThemeFiles.path(Arrays.asList("fonts", "OFL.txt")));
+        assertNull(ThemeFiles.path(Arrays.asList("fonts", "a.jpg")));
+        assertNull(ThemeFiles.path(Arrays.asList("fonts", "sub", "a.ttf")));
+        assertNull(ThemeFiles.path(Collections.singletonList("a.ttf")));
+        assertNull(ThemeFiles.path(Arrays.asList("wallpapers", "a.ttf")));
+        assertFalse(ThemeFiles.fontFile("../a.ttf"));
+        assertFalse(ThemeFiles.fontFile(null));
+    }
+
+    @Test public void theFontsFolderIsACollectionOfFontsOnly() {
+        assertTrue(ThemeFiles.isCollection(Collections.singletonList("fonts")));
+        assertTrue(ThemeFiles.collectionFile("fonts", "a.ttf"));
+        assertFalse(ThemeFiles.collectionFile("fonts", "a.jpg"));
+        assertTrue(ThemeFiles.collectionFile("wallpapers", "a.jpg"));
+        assertFalse(ThemeFiles.collectionFile("wallpapers", "a.ttf"));
+    }
+
     @Test public void anythingElseIsRefused() {
         assertNull(ThemeFiles.path(null));
         assertNull(ThemeFiles.path(Collections.emptyList()));

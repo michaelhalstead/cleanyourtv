@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Push a theme (a folder with config.json, and optionally a wallpaper.jpg or a wallpapers/ collection) to the
+# Push a theme (a folder with config.json, and optionally a wallpaper.jpg, a wallpapers/ collection or fonts/) to the
 # launcher on the TV and restart Home so it picks it up. The launcher reads the files from its external files
 # directory and overlays config.json on its built-in config.xml; see themes/README.md for the keys.
 #
@@ -66,8 +66,11 @@ del() { echo "rm -f $DIR/$1 2>/dev/null; content delete --uri $URI/$1 2>/dev/nul
 # that left the pictures behind still shows the theme it just removed. Both paths use this one string.
 CLEAR_WALLPAPERS="mkdir -p $DIR/wallpapers 2>/dev/null; rm -f $DIR/wallpapers/*.[jJ][pP][gG] $DIR/wallpapers/*.[jJ][pP][eE][gG] $DIR/wallpapers/*.[pP][nN][gG] $DIR/wallpapers/*.[wW][eE][bB][pP] 2>/dev/null; content delete --uri $URI/wallpapers 2>/dev/null"
 
+# The theme's fonts (font, clock_font): emptied before a push and by --reset, as the wallpapers are.
+CLEAR_FONTS="mkdir -p $DIR/fonts 2>/dev/null; rm -f $DIR/fonts/*.[tT][tT][fF] $DIR/fonts/*.[oO][tT][fF] 2>/dev/null; content delete --uri $URI/fonts 2>/dev/null"
+
 if [ "${1:-}" = --reset ]; then
-  tv "mkdir -p $DIR 2>/dev/null; $(del config.json); $(del wallpaper.jpg); $(del wallpapers/captions.txt); $CLEAR_WALLPAPERS; printf '%s' '$REVISION' > $TMP-theme_revision; $(put theme_revision); $RESTART; echo reset" | tail -n 1
+  tv "mkdir -p $DIR 2>/dev/null; $(del config.json); $(del wallpaper.jpg); $(del wallpapers/captions.txt); $CLEAR_WALLPAPERS; $CLEAR_FONTS; printf '%s' '$REVISION' > $TMP-theme_revision; $(put theme_revision); $RESTART; echo reset" | tail -n 1
   exit 0
 fi
 THEME="${THEME_ARG:?usage: theme.sh <theme folder> | --reset}"
@@ -103,6 +106,19 @@ if [ -f "$THEME/wallpapers/captions.txt" ]; then
   tv "$(put wallpapers/captions.txt)" >/dev/null
 else
   tv "$(del wallpapers/captions.txt)" >/dev/null
+fi
+tv "$CLEAR_FONTS" >/dev/null
+if [ -d "$THEME/fonts" ]; then
+  for FONT in "$THEME"/fonts/*; do
+    [ -f "$FONT" ] || continue
+    case "$FONT" in
+      *.[tT][tT][fF]|*.[oO][tT][fF])
+        NAME=$(basename "$FONT")
+        [[ "$NAME" =~ ^[A-Za-z0-9_.-]+$ ]] || { echo "unsupported font filename: $NAME" >&2; exit 1; }
+        "$PY" -I b64push.py "$FONT" "$(stage "fonts/$NAME")"
+        tv "$(put "fonts/$NAME")" >/dev/null ;;
+    esac
+  done
 fi
 tv "printf '%s' '$REVISION' > $TMP-theme_revision; $(put theme_revision)" >/dev/null
 tv "$RESTART; echo applied" | tail -n 1

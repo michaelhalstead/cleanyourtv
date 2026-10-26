@@ -89,6 +89,23 @@ rim for focus. It also sets:
 
 The keys are documented in [`themes/README.md`](../themes/README.md).
 
+### Font and clock
+
+`font`, `clock_style` and `clock_font` set a retro typeface for all text and turn the clocks into an orange 7-segment
+LED display (Home and the idle clock). The fonts live in `retro70s/theme/fonts/` and are pushed with the theme by
+`tools/theme.sh`; they are not built into the launcher. Delete a key to switch it off.
+
+- `font: "Righteous-Regular.ttf"`: [Righteous](https://fonts.google.com/specimen/Righteous) by Astigmatic.
+- `clock_style: "led"` with `clock_font: "DSEG7Classic-Bold.ttf"`: [DSEG](https://github.com/keshikan/DSEG) by keshikan.
+
+Both fonts are under the SIL Open Font License 1.1; the licence texts are beside them in `fonts/`.
+
+### CRT button
+
+`top_bar_apps: ["io.github.michaelhalstead.crt"]` puts the [CRT overlay add-on](../addons/crt-overlay/) in the top
+bar; its button opens a side panel with on/off, the Arcade 240p / Console 240p / TV 480i presets and strength. Install
+the add-on first with `addons/crt-overlay/install.sh`; without it the button is skipped.
+
 On a Hisense set whose stock launcher you disabled, also add `"handle_view_inputs": true` so the remote's Input
 button opens the launcher's Inputs menu.
 
